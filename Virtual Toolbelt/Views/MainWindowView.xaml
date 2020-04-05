@@ -1,0 +1,107 @@
+﻿<Window x:Class="Virtual_Toolbelt.Views.MainWindowView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Virtual_Toolbelt.Views"
+        xmlns:vm="clr-namespace:Virtual_Toolbelt.ViewModels"
+        xmlns:ut="clr-namespace:Virtual_Toolbelt.Utilities"
+        mc:Ignorable="d" d:DataContext="{d:DesignInstance vm:MainWindowViewModel}"
+        Title="Tools" Height="630" Width="120"
+        ResizeMode="CanMinimize"  BorderThickness="3" 
+        BorderBrush="Blue" Background="Black" WindowStyle="None">
+    <!--encapsulate everything in a label to make the Drop event valid on the whole window-->
+    <Label AllowDrop="True">
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="Drop">
+                <ut:InteractiveCommand Command="{Binding Path=DropFileCommand}"/>
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
+        <Grid AllowDrop="True">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <!--if the bottom row is set to auto the ListView won't scroll-->
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <!--the top of the window-->
+            <Label Name="TopLabel" Grid.Row="0" Height="30" Padding="0" AllowDrop="true"  MouseDown="Window_MouseDown" MouseDoubleClick="TopLabel_MouseDoubleClick">
+                <DockPanel Width="{Binding Path=ActualWidth, ElementName=TopLabel}">
+                    <!--exit button-->
+                    <Image DockPanel.Dock="Right"  Source="{Binding Path=ExitButtonSource}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseEnter">
+                                <i:InvokeCommandAction Command="{Binding Path=ExitButtonEnteredCommand}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeave">
+                                <i:InvokeCommandAction Command="{Binding Path=ExitButtonLeftCommand}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                <i:InvokeCommandAction Command="{Binding Path=ExitButtonLeftMouseClickCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Image>
+                    <!--title-->
+                   <!-- <TextBlock Text="BELT" FontSize="20" FontWeight="Bold" Foreground="Red"/>-->
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Path=HoldersCount}" FontSize="20" FontWeight="Bold" Foreground="Red"/>
+                        <TextBlock Text="/" FontSize="20" FontWeight="Bold" Foreground="Red"/>
+                        <TextBlock Text="{Binding Path=MaxHolders}" FontSize="20" FontWeight="Bold" Foreground="Red"/>
+                    </StackPanel>
+                </DockPanel>
+            </Label>
+            <!--displays the HolderViews-->
+            <ListView Grid.Row="1" Width="111" Height="600" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+              ScrollViewer.VerticalScrollBarVisibility="Disabled"
+              ItemsSource="{Binding Path=HolderVMs}" BorderThickness="0"  Background="Black">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <!--removes background colors and any padding-margin-->
+                        <Setter Property="Focusable" Value="False"/>
+                        <Setter Property="Padding" Value="0"/>
+                        <!--negative margins to offset the ListView built-in margin-->
+                        <Setter Property="Margin" Value="-4,-1,0,-1"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="BorderBrush" Value="Transparent"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        <!--disables the default selection system of the ListView-->
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                    <Grid Background="{TemplateBinding Background}">
+                                        <Border Name="Selection" Visibility="Collapsed" />
+                                        <GridViewRowPresenter Grid.RowSpan="2"
+                                      Margin="{TemplateBinding Padding}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.Resources>
+                    <!--removes the ColumnHeader-->
+                    <Style TargetType="{x:Type GridViewColumnHeader}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                    </Style>
+                </ListView.Resources>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Width="auto">
+                            <GridViewColumn.CellTemplate>
+                                <!--Displays the HolderView binding it to the corresponding ViewModel-->
+                                <DataTemplate>
+                                    <local:HolderView DataContext="{Binding}">
+                                    </local:HolderView>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+    </Label>
+</Window>

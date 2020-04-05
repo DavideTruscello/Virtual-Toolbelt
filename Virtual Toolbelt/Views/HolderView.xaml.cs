@@ -10,17 +10,16 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Virtual_Toolbelt
+namespace Virtual_Toolbelt.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for HolderView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class HolderView : UserControl
     {
-        public MainWindow()
+        public HolderView()
         {
             InitializeComponent();
         }
