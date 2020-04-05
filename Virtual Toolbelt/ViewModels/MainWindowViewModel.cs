@@ -12,9 +12,9 @@ namespace Virtual_Toolbelt.ViewModels
     {
         public MainWindowViewModel()
         {
-            //holders gets initialized and loaded with the paths from previous time
+            //HolderVMs gets initialized and loaded with the paths from previous time
             HolderVMs = new ObservableCollection<HolderViewModel>();
-            HolderVMs.CollectionChanged += HoldersChanged;
+            HolderVMs.CollectionChanged += HolderVMsChanged;
             LoadSavedPaths();
             //commands initialization
             ExitButtonEnteredCommand = new Utilities.ArgsCommand<object>(ExitButtonEnteredMethod);
@@ -28,10 +28,10 @@ namespace Virtual_Toolbelt.ViewModels
         //collection of Holder that will be displayed in the Window 
         public ObservableCollection<HolderViewModel> HolderVMs { get; private set; }
 
-        //when Holders changes, notifies for HoldersCount(the try-catch is to avoid
+        //when HolderVMs changes, notifies for HoldersCount(the try-catch is to avoid
         //the exceptions that would happen during the loading when the window is not
         //ready and IPropertyChanged would crash)
-        private void HoldersChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void HolderVMsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
@@ -52,7 +52,7 @@ namespace Virtual_Toolbelt.ViewModels
             }
         }
 
-        //binds to the window to return how many holders are in Holders
+        //binds to the window to return how many holders are in HolderVMs
         public int HoldersCount
         {
             get { return HolderVMs.Count; }
@@ -100,7 +100,7 @@ namespace Virtual_Toolbelt.ViewModels
             }
         }
 
-        //If the path has already been added to Holders or does not exists, returns false
+        //If the path has already been added to HolderVMs or does not exists, returns false
         private bool IsFilePathValid(string path)
         {
             bool alreadyAdded = false;
@@ -148,7 +148,7 @@ namespace Virtual_Toolbelt.ViewModels
             Application.Current.Shutdown();
         }
 
-        //adds the file or folder path(as a HolderViewModel) to Holders when dragged and dropped
+        //adds the file or folder path(as a HolderViewModel) to HolderVMs when dragged and dropped
         public Utilities.ArgsCommand<DragEventArgs> DropFileCommand { get; private set; }
         private void DropFileMethod(DragEventArgs e)
         {
